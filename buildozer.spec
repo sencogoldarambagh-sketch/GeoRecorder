@@ -12,7 +12,7 @@ source.include_exts = py,png,jpg,kv,atlas,json,txt,bin
 
 version = 1.0.0
 
-requirements = python3,kivy,plyer,requests,sqlite3
+requirements = python3,kivy,plyer,jnius,android,pyjnius,sqlite3
 
 orientation = portrait
 
