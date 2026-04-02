@@ -121,7 +121,7 @@ class GeoRecorderApp(App):
             Permission.ACCESS_BACKGROUND_LOCATION
         ])
 
-        self.start_foreground_service()
+       # self.start_foreground_service()
 
         root = BoxLayout(orientation="vertical", padding=8, spacing=6)
 
