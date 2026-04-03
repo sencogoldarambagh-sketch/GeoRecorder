@@ -5,13 +5,9 @@ from kivy.utils import platform
 from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
-from plyer import storagepath
 
 def get_app_dir():
-    """Finds a safe internal folder for logs and data."""
     if platform == 'android':
         from android.storage import app_storage_path
         path = os.path.join(app_storage_path(), "GeoRecorder")
@@ -24,7 +20,6 @@ def get_app_dir():
 
 APP_DIR = get_app_dir()
 LOG_FILE = os.path.join(APP_DIR, "georecorder.log")
-QUEUE_FILE = os.path.join(APP_DIR, "queue.json")
 
 def log(msg):
     try:
@@ -35,28 +30,19 @@ def log(msg):
 
 class GeoRecorderApp(App):
     def build(self):
-        root = BoxLayout(orientation="vertical", padding=10, spacing=10)
-        self.status_label = Label(text="SYSTEM READY", color=(0, 1, 0, 1))
+        root = BoxLayout(orientation="vertical", padding=20, spacing=20)
+        self.status = Label(text="READY TO BUILD", font_size='20sp')
         
-        # UI Inputs
-        self.name_input = TextInput(hint_text="Customer Name", size_hint_y=None, height=50)
-        root.add_widget(self.name_input)
+        btn = Button(text="TEST STORAGE & LOG", size_hint_y=None, height=100)
+        btn.bind(on_press=self.test_action)
         
-        # Save Button
-        save_btn = Button(text="SAVE RECORD", size_hint_y=None, height=60, background_color=(0.2, 0.6, 1, 1))
-        save_btn.bind(on_press=self.simple_save)
-        
-        root.add_widget(save_btn)
-        root.add_widget(self.status_label)
+        root.add_widget(self.status)
+        root.add_widget(btn)
         return root
 
-    def simple_save(self, instance):
-        log(f"Manual Save Triggered for: {self.name_input.text}")
-        self.status_label.text = "RECORD SAVED LOCALLY"
-        Clock.schedule_once(lambda dt: self.reset_status(), 3)
-
-    def reset_status(self):
-        self.status_label.text = "SYSTEM READY"
+    def test_action(self, instance):
+        log("Button pressed - App is functional")
+        self.status.text = "LOG WRITTEN SUCCESSFULLY"
 
 if __name__ == "__main__":
     GeoRecorderApp().run()
