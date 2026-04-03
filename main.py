@@ -34,28 +34,44 @@ if platform == 'android':
 # STORAGE PATHS & LOGGING
 # ==========================================================
 
+# ==========================================================
+# STORAGE PATHS & LOGGING (STABLE VERSION)
+# ==========================================================
+
 def get_app_dir():
+    """Returns a valid directory to store app data."""
     try:
-        # Try public documents first
+        # 1. Primary choice: Public Documents folder
         path = os.path.join(storagepath.get_documents_dir(), "GeoRecorder")
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
         return path
-    except Exception:
-        # Fallback to internal app storage if permission denied
-        path = os.path.join(app_storage_path(), "GeoRecorder")
-        os.makedirs(path, exist_ok=True)
+    except Exception as e:
+        # 2. Fallback: Internal Private App Storage (always works)
+        log(f"Redirecting storage due to: {e}")
+        if platform == 'android':
+            from android.storage import app_storage_path
+            path = os.path.join(app_storage_path(), "GeoRecorder")
+        else:
+            path = os.path.join(os.getcwd(), "GeoRecorder")
+            
+        if not os.path.exists(path):
+            os.makedirs(path, exist_ok=True)
         return path
 
+# These variables now use the function above to get the safe path
 APP_DIR = get_app_dir()
 DB_FILE = os.path.join(APP_DIR, "records.json")
 QUEUE_FILE = os.path.join(APP_DIR, "queue.json")
 LOG_FILE = os.path.join(APP_DIR, "georecorder.log")
 
 def log(msg):
-    with open(LOG_FILE, "a", encoding="utf8") as f:
-        f.write(f"{datetime.now()} : {msg}\n")
-
+    """Writes system events to the log file."""
+    try:
+        with open(LOG_FILE, "a", encoding="utf8") as f:
+            f.write(f"{datetime.now()} : {msg}\n")
+    except:
+        pass # Prevent crash if logging fails
 # ==========================================================
 # RELIABILITY QUEUE
 # ==========================================================
