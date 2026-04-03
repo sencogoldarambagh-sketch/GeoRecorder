@@ -13,14 +13,16 @@ orientation = portrait
 fullscreen = 0
 
 # ANDROID SETTINGS
-android.api = 34
+android.api = 33
 android.minapi = 24
 android.ndk = 25b
+android.accept_sdk_license = True
+android.enable_androidx = True
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
 
 # RE-MATCHED PERMISSIONS (Formatted for Buildozer)
-android.permissions = INTERNET, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION, ACCESS_NETWORK_STATE, CAMERA, FOREGROUND_SERVICE
+android.permissions = INTERNET,ACCESS_FINE_LOCATION,ACCESS_COARSE_LOCATION,ACCESS_BACKGROUND_LOCATION,ACCESS_NETWORK_STATE,CAMERA,FOREGROUND_SERVICE
 
 # STABILITY FIXES
 android.enable_androidx = True
