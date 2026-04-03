@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04   # or ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v4
@@ -17,12 +17,13 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          # Optional: buildozer_version: master   # or 'stable' (default is usually fine)
-          command: buildozer -v android debug
+          buildozer_version: master        # More up-to-date than stable
+          command: |
+            pip3 install --user --upgrade Cython==0.29.36 virtualenv
+            buildozer -v android debug
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: georecorder-apk
-          path: ${{ steps.buildozer.outputs.filename }}   # This action provides the output path automatically
-          # Alternative if above doesn't work: path: bin/*.apk
+          path: bin/*.apk
