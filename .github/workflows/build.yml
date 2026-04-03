@@ -1,25 +1,28 @@
 name: Build Android APK
-on: [push, pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04   # or ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev libltdl-dev
-          pip3 install --user --upgrade buildozer "Cython<3.0" virtualenv
-
       - name: Build with Buildozer
-        run: |
-          export PATH=$PATH:$HOME/.local/bin
-          yes | buildozer -v android debug
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          # Optional: buildozer_version: master   # or 'stable' (default is usually fine)
+          command: buildozer -v android debug
 
-      - name: Upload Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: package
-          path: bin/*.apk
+          name: georecorder-apk
+          path: ${{ steps.buildozer.outputs.filename }}   # This action provides the output path automatically
+          # Alternative if above doesn't work: path: bin/*.apk
